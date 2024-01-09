@@ -4,6 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const Blog = require("../models/blog");
 const Comment = require("../models/comment");
+const User = require("../models/user");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,9 +18,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get("/add-new", (req, res) => {
+router.get("/add-new", async (req, res) => {
+  const name = await User.findById(req.user._id);
   return res.render("addBlog", {
     user: req.user,
+    fullName: name.fullName,
   });
 });
 
@@ -29,12 +32,15 @@ router.get("/:id", async (req, res) => {
     const comments = await Comment.find({ blogId: req.params.id }).populate(
       "createdBy"
     );
+    const user = await User.findById(req.params.id);
+    const name = await User.findById(req.user._id);
     // console.log(comments);
     if (!blog) {
       return res.status(404).send("Blog not found");
     }
     return res.render("blog", {
       user: req.user,
+      fullName: name.fullName,
       blog,
       comments,
     });

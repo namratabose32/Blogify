@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 const {
   checkForAuthenticationCookie,
 } = require("./middlewares/authentication");
+const User = require("./models/user");
 const PORT = process.env.PORT || 8000;
 
 mongoose
@@ -28,8 +29,12 @@ app.use(express.static(path.resolve("./public")));
 
 app.get("/", async (req, res) => {
   const allBlogs = await Blog.find({});
+  const name = await User.findById(req.user?._id);
+  // console.log(req.user);
+  // console.log(name);
   res.render("home", {
     user: req.user,
+    fullName: name?.fullName,
     blogs: allBlogs,
   });
 });
