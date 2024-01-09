@@ -1,3 +1,4 @@
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const app = express();
@@ -9,11 +10,12 @@ const cookieParser = require("cookie-parser");
 const {
   checkForAuthenticationCookie,
 } = require("./middlewares/authentication");
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 mongoose
   .connect(
-    "mongodb+srv://namratabose32:namratabose32@cluster0.eproxgu.mongodb.net/?retryWrites=true&w=majority"
+    process.env.MONGO_URL
+    // "mongodb+srv://namratabose32:namratabose32@cluster0.eproxgu.mongodb.net/?retryWrites=true&w=majority"
   )
   .then(() => console.log("MongoDb connected"));
 
